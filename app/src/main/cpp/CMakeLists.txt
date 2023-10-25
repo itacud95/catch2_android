@@ -5,7 +5,9 @@
 # Sets the minimum CMake version required for this project.
 cmake_minimum_required(VERSION 3.22.1)
 
-
+option(BUILD_SHARED_LIBS "Build shared library" on)
+add_subdirectory(Catch2)
+target_link_libraries(Catch2 PUBLIC log)
 
 # Declares the project name. The project name can be accessed via ${ PROJECT_NAME},
 # Since this is the top level CMakeLists.txt, the project name is also accessible
@@ -35,7 +37,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
 # build script, prebuilt third-party libraries, or Android system libraries.
 target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
-        android
-        log)
+        PUBLIC android
+        PUBLIC log
+        Catch2::Catch2WithMain
+        )
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE ${Catch2_INCLUDE_DIRS})
