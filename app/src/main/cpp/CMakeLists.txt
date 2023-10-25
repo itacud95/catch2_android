@@ -39,6 +39,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         PUBLIC android
         PUBLIC log
-        Catch2::Catch2WithMain
+        Catch2::Catch2
         )
-
