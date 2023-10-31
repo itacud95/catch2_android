@@ -1,0 +1,5 @@
+SECTIONS {
+    .dynsym : {
+        KEEP(*(.dynsym));
+    }
+}

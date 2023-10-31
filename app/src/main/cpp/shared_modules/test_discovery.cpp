@@ -1,8 +1,10 @@
-#define CATCH_CONFIG_MAIN
 #include "catch2/catch_session.hpp"
 
-#include <iostream>
-extern "C" int RunTests(Catch::Session& session) {
-    std::cout << "RunTests()\n";
+extern "C" int RunTests(int argc, char *argv[], Catch::Session& session) {
+    return session.run(argc, argv);
+}
+
+extern "C" int RunTestsv2() {
+    static auto session = Catch::Session();
     return session.run();
 }
