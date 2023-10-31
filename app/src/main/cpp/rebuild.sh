@@ -9,5 +9,5 @@ if [ ! -f compile_commands.json ]; then
     ln -s build/compile_commands.json . 
 fi
 
-./build/shared_modules/runner --filenames-as-tags
+./build/shared_modules/runner
 # ./build/shared_modules/runner --filenames-as-tags [#bar]

@@ -5,5 +5,5 @@ TEST_CASE("Foo Test") {
 }
 
 TEST_CASE("A test") {
-    REQUIRE(true);
+    REQUIRE(false);
 }

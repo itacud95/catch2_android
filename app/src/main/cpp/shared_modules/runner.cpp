@@ -5,36 +5,27 @@
 
 #include <dlfcn.h>
 #include <iostream>
+#include <list>
+#include <memory>
+#include <vector>
 
 class TestRunner {
 public:
+  TestRunner(const TestRunner &) = delete;
+  TestRunner(TestRunner &&) = delete;
+  TestRunner &operator=(const TestRunner &) = delete;
+  TestRunner &operator=(TestRunner &&) = delete;
+
   TestRunner(std::string);
   ~TestRunner();
-  bool RunTest(int argc, char *argv[], Catch::Session &session);
-  bool RunTestv2();
-  void Close() {
-    if (!_handle) {
-      std::cout << "Failed to close handle\n";
-      return;
-    }
-    std::cout << "Closing handle\n";
-    dlclose(_handle);
-  }
+  bool IsLoaded() const;
 
 private:
-  bool Initialize();
-  using RunTestsEntry = int (*)(int argc, char *argv[],
-                                Catch::Session &session);
-  using RunTestsEntryv2 = int (*)();
-  std::string _library;
   void *_handle;
-  RunTestsEntry _runTests;
-  RunTestsEntryv2 _runTestsv2;
 };
 
 TestRunner::TestRunner(std::string library)
-    : _library(library), _handle(nullptr) {
-  Initialize();
+    : _handle(dlopen(library.c_str(), RTLD_NOW)) {
 }
 
 TestRunner::~TestRunner() {
@@ -44,41 +35,7 @@ TestRunner::~TestRunner() {
   dlclose(_handle);
 }
 
-bool TestRunner::RunTest(int argc, char *argv[], Catch::Session &session) {
-  if (!Initialize()) {
-    return false;
-  }
-  return _runTests(argc, argv, session);
-}
-
-bool TestRunner::RunTestv2() {
-  if (!Initialize()) {
-    return false;
-  }
-  return _runTestsv2();
-}
-
-bool TestRunner::Initialize() {
-  if (_handle) {
-    return true;
-  }
-
-  _handle = dlopen(_library.c_str(), RTLD_NOW);
-  if (!_handle) {
-    std::cout << "failed to load library\n";
-    return false;
-  }
-
-  dlerror();
-
-  _runTests = (RunTestsEntry)dlsym(_handle, "RunTests");
-  _runTestsv2 = (RunTestsEntryv2)dlsym(_handle, "RunTests");
-  if (!_runTestsv2) {
-    std::cout << "failed to load symbol\n";
-    return false;
-  }
-  return true;
-}
+bool TestRunner::IsLoaded() const { return _handle != nullptr; }
 
 class testRunListener : public Catch::EventListenerBase {
 public:
@@ -89,7 +46,6 @@ public:
       // store failed test
       auto str = testCaseStats.stdOut;
       auto foo = testCaseStats.testInfo;
-      
     }
   }
 
@@ -110,15 +66,15 @@ int main(int argc, char *argv[]) {
   };
 
   static auto session = Catch::Session();
-  auto& config = session.configData();
+  auto &config = session.configData();
   config.filenamesAsTags = true;
-  return session.run(argc, argv);
 
+  std::list<TestRunner> testLibs;
   for (const auto &test : tests) {
-    TestRunner runner(path + test);
-    // runner.RunTestv2();
-    runner.RunTest(argc, argv, session);
+    testLibs.emplace_back(path + test);
+    if (!testLibs.back().IsLoaded()){
+      std::cout << "Failed to load test\n";
+    }
   }
-
-  return 0;
+  return session.run(argc, argv);
 }

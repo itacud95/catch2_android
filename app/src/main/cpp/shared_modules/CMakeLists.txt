@@ -10,5 +10,5 @@ add_subdirectory(foo)
 
 add_executable(runner runner.cpp)
 target_link_libraries(runner Catch2::Catch2)
-target_link_libraries(runner foo_tests)
-target_link_libraries(runner bar_tests)
+# target_link_libraries(runner foo_tests)
+# target_link_libraries(runner bar_tests)
