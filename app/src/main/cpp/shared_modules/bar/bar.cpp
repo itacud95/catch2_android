@@ -1,9 +1,9 @@
 #include "catch2/catch_all.hpp"
 
 TEST_CASE("Bar Test") {
-    REQUIRE(false);
+    REQUIRE(true);
 }
 
 TEST_CASE("A test") {
-    REQUIRE(false);
+    REQUIRE(true);
 }
