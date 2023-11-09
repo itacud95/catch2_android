@@ -26,6 +26,8 @@ Java_com_example_unit_1tests_MainActivity_stringFromJNI(JNIEnv *env, jobject /* 
         return env->NewStringUTF(error_msg);
     }
 
+    __android_log_write( ANDROID_LOG_DEBUG, "Catch", "stringFromJNI()" );
+
     runTests(0, nullptr);
 
     return env->NewStringUTF("test success");
