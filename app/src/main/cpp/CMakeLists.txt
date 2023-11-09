@@ -5,6 +5,8 @@ project("unit_tests")
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+add_subdirectory(test-runner)
+
 add_library(${CMAKE_PROJECT_NAME} SHARED
     native-lib.cpp)
 
