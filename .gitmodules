@@ -1,6 +1,3 @@
-[submodule "app/src/main/cpp/Catch2"]
-	path = app/src/main/cpp/Catch2
-	url = git@github.com:catchorg/Catch2.git
 [submodule "app/src/main/cpp/test-runner"]
 	path = app/src/main/cpp/test-runner
 	url = git@github.com:itacud95/test-runner.git
